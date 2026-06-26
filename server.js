@@ -271,5 +271,20 @@ cron.schedule('*/30 * * * *', async () => {
   }
 });
 console.log('⏰ Template sync cron started (every 30 min)');
+app.get("/test-db", async (req, res) => {
+  try {
+    const [db] = await pool.execute("SELECT DATABASE() as db");
+    const [tables] = await pool.execute("SHOW TABLES");
+    const [columns] = await pool.execute("SHOW COLUMNS FROM admins");
+
+    res.json({
+      database: db,
+      tables,
+      columns,
+    });
+  } catch (err) {
+    res.json(err);
+  }
+});
 
 module.exports = { app, io };
