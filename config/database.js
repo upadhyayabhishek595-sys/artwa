@@ -1,7 +1,6 @@
 // config/database.js
 require('dotenv').config();
 const mysql = require('mysql2');
-
 const pool = mysql.createPool({
   host: process.env.DB_HOST || 'localhost',
   port: process.env.DB_PORT || 3306,
@@ -10,7 +9,10 @@ const pool = mysql.createPool({
   database: process.env.DB_NAME || 'whatsapp_omnichannel',
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
+  ssl: {
+    rejectUnauthorized: false  // ← Aiven ke liye required
+  }
 });
 
 // Promise wrapper - yahi fix hai!

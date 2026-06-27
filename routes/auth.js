@@ -15,7 +15,8 @@ const { sendAuthResponse }                       = require('../utils/tokens');
 router.post('/admin/login', loginLimiter, validate(schemas.adminLogin), async (req, res) => {
     try {
         const { email, password } = req.body;
-
+console.log('DB_NAME:', process.env.DB_NAME);
+console.log('DB_HOST:', process.env.DB_HOST);
         const [rows] = await pool.execute(
             'SELECT * FROM admins WHERE email = ? AND status = "active"',
             [email]

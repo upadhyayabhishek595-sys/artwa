@@ -68,7 +68,7 @@ if (process.env.REDIS_HOST) {
 app.set('io', io);
 
 // ─── SECURITY MIDDLEWARE ──────────────────────────────────────────────────────
-
+const { startCron } = require('./src/cron');
 app.use(helmet());
 app.use(cors({ origin: FRONTEND_URL, credentials: true }));
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'tiny'));
@@ -253,8 +253,11 @@ server.listen(PORT, () => {
 
 // ─── CRON JOBS ────────────────────────────────────────────────────────────────
 
-const { startCron } = require('./src/cron');
+
 startCron();
+app.set('trust proxy', 1); // Render ke proxy ke liye
+console.log('Connected DB_NAME:', process.env.DB_NAME);
+console.log('Connected DB_HOST:', process.env.DB_HOST);
 
 // Template sync cron — every 30 min sync all clients' template statuses from Meta
 const cron = require('node-cron');
@@ -271,20 +274,6 @@ cron.schedule('*/30 * * * *', async () => {
   }
 });
 console.log('⏰ Template sync cron started (every 30 min)');
-app.get("/test-db", async (req, res) => {
-  try {
-    const [db] = await pool.execute("SELECT DATABASE() as db");
-    const [tables] = await pool.execute("SHOW TABLES");
-    const [columns] = await pool.execute("SHOW COLUMNS FROM admins");
 
-    res.json({
-      database: db,
-      tables,
-      columns,
-    });
-  } catch (err) {
-    res.json(err);
-  }
-});
 
 module.exports = { app, io };
