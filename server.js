@@ -120,7 +120,7 @@ pool.execute('SELECT 1')
   .then(() => console.log('✅ Database connected'))
   .catch(err => {
     console.error('❌ DB connection failed:', err.message);
-    process.exit(1); // Don't start if DB is down
+    // process.exit(1); // Don't start if DB is down
   });
 
 // ─── ROUTES ───────────────────────────────────────────────────────────────────
